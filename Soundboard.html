@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<script>
+/*
+	This variable is the core setup for the soundboard.
+	Use is like this:
+	- Make square brackets for every sound you want to use.
+	- Inside the brackets you must declare three values, seperated by a comma.
+		1. The text on the button.
+		2. Define the path and the name of the audio file. It must be an mp3 format.
+		   The audion files' folders are on the same level as the folder '_htlm' containing this file.
+		3. The category of this button. It basicaly defines the color of the button.
+		   For now, seven categories are set. Soundtrack, Environment, Magic, Spirits, Matrix, Guns and Vehicles.
+		   You can define more categories by just adding a class with the appropriate name to the list below.
+	If you make an emptyset of variables (like so: ['']), a linebreak is inserted.
+
+	All the sounds used here are free audio from https://freesound.org/.
+	It's a marvelous source of all kinds of sounds you realy need to check out.
+*/
+var soundboard_buttons = [
+	// Ambient Music
+	['Intro','Soundtrack/262493__gipsyga__intro-to-a-space-series.mp3','soundtrack'],
+	['Tension 30Seconds','Soundtrack/Tension-25s.mp3','soundtrack'],
+	['Sad scene','Ambient/solitary_cello.mp3','soundtrack'],
+	// Environmental sounds
+	['Leichter Regen','Environment/light-rain_01.mp3','environment'],
+	['Starker Regen','Environment/heavy-rain_01.mp3','environment'],
+	['Sturm','Environment/strong-wind_01.mp3','environment'],
+	['Wind im Wald','Environment/strong-wind-through-leaves_01.mp3','environment'],
+	['Stiller Sommerabend','Environment/silent-summer-night.mp3','environment'],
+	['Hupkonzert','Environment/traffic-horns-city-nervous-busy_01.mp3','environment'],
+	[''],
+	// Vehicles
+	['Helicopter','Cars/194250__fridobeck__helicopter.mp3','vehicles'],
+	['Fast Car','Cars/189878__confusion-music__drag-race-3-b.mp3','vehicles'],
+	['Harley','Cars/harley1_01.mp3','vehicles'],
+	['Motorbike','Cars/motorbike-engine-passing_01.mp3','vehicles'],
+	['Flyspy','Cars/quadcopter-drone.mp3','vehicles'],
+	['Quadcopter Drone','Cars/drone-fly-by_01.mp3','vehicles'],
+	// Matrix
+	['Sprite','Matrix/123973__jaraxe__computer-worm.mp3','matrix'],
+	['Dataspike','Matrix/158843__stoltingmediagroup__futuresoundfx-704.mp3','matrix'],
+	['Hack on the Fly','Matrix/158865__stoltingmediagroup__futuresoundfx-778.mp3','matrix'],
+	['ICE: Trace','Matrix/158871__stoltingmediagroup__futuresoundfx-745.mp3','matrix'],
+	// Guns
+	['Single Shot','Guns/52593__michel-hollicardo__gun-shoot.mp3','guns'],
+	['Three Shot','Guns/145206__lensflare8642__m16-gun-3-round-burst.mp3','guns'],
+	['Drone Rotary Gun','Guns/104401__kantouth__gatling-gun.mp3','guns'],
+	['Heavy Machine Gun','Guns/165394__shawnyboy__heavy-machine-gun.mp3','guns'],
+	['Sub Machine Gun','Guns/133799__julien-nicolas__m-16-automatic-gun.mp3','guns'],
+	['Multiple Guns Fight','Guns/165478__shawnyboy__gun-battle-short.mp3','guns'],
+	['Single Explosion','Guns/explosion.mp3','guns'],
+	['Grenade Launcher','Guns/grenade-launcher.mp3','guns'],
+	// Spirits
+	['Conjuring','Spirits/175944__litruv__ghost-whispers_short.mp3','spirits'],
+	['Animal Spirit Deep','Spirits/50881__gabemiller74__werewolf.mp3','spirits'],
+	['Animal Spirit','Spirits/94166__robinhood76__01561-ghost-scream.mp3','spirits'],
+	['Spirit of Man','Spirits/147076__metrostock99__demon-latin.mp3','spirits'],
+	['Spirit of Man (Kids)','Spirits/150017__klankbeeld__horror-kids-02_short.mp3','spirits'],
+	// Magic
+	['Attack Spell','Magic/fire-spell1_01.mp3','magic'],
+	['Healing Spell','Magic/healing-spell_01.mp3','magic'],
+	['Poison Spell','Magic/poison-spell_01.mp3','magic'],
+	['Transformation Spell','Magic/361540__katzlbt__magiccauldronbubbling.mp3','magic'],
+	['Curse','Magic/curse_01.mp3','magic'],
+];
+</script>
+<html>
+    <head>
+			<title>Soundboard</title>
+			<style>
+				.soundtrack {
+					background-color: #c2c8b8;
+				}
+				.environment {
+					background-color: #c8f3fc;
+				}
+				.magic {
+					background-color: #30f8a8;
+				}
+				.spirits {
+					background-color: #28bf80;
+				}
+				.matrix {
+					background-color: #94cad1;
+				}
+				.guns {
+					background-color: #e3819e;
+				}
+				.vehicles {
+					background-color: #d0af4a;
+				}
+
+				body {
+					background: #000;
+				}
+				.boardbutton {
+					display: block;
+					width: 9%;
+					border: none;
+					height: 5rem;
+					font-size: 14px;
+					cursor: pointer;
+					float: left;
+					margin-right: 1%;
+					margin-bottom: 1%;
+					position: relative;
+					padding: 10px;
+				}
+				@media (max-width:1000px) {
+					.boardbutton {
+						width: 19%;
+					}
+				}
+				@media (max-width:500px) {
+					.boardbutton {
+						width: 32%;
+					}
+				}
+				.boardbutton.playing:after {
+					content: "\25b6";
+					font-size: 400%;
+					display: block;
+					position: absolute;
+					color: rgba(0,0,0,0.4);
+					text-align: center;
+					pointer-events: none;
+					line-height: 5rem;
+			    left: 0;
+			    right: 0;
+			    top: 0;
+			    bottom: 0;
+				}
+			</style>
+    </head>
+    <body>
+	    <section id="soundboard">
+		    <!-- buttons will be injected here by JavaScript -->
+	    </section>
+    </body>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript">
+			$( document ).ready(function() { var audio;
+				// Build buttons
+				// -- loop through the "soundboard_buttons"-array
+				// -- First: Build the html buttons and give them a class and a data attribute to link to the audio file
+				// -- Second: make a variable to later store the audio element in (this nees to be done to have one audiotrack for each button)
+                // -- If you put an empty value in a button definition, it generates a line break.
+				$.each(soundboard_buttons, function(number,button) {
+    				if (button != '') {
+					    $('#soundboard').append('<button class="boardbutton '+ button[2]+'" data-audio=\'["'+button[1]+'",'+number+']\'>'+button[0]+'</button>');
+                        window["audio" + number];
+                    } else {
+                        $('#soundboard').append('<br style="clear:both">');
+                    }
+				});
+
+				// Actions for buttons
+				// -- when pressed
+				// -- Look if this audio is allready playing. The class "playing" will indicate that.
+				// -- If it is playing: pause the audio.
+				// -- If it is not playing: put an audio element into the previously prepared variable, use the <button>'s data attribute to match the audio file and play it.
+				$('.boardbutton').click( function(){
+
+					if ($(this).hasClass('playing')) {
+						window["audio"+$(this).data('audio')[1]].pause();
+					} else {
+						audiofile = $(this).data('audio')[0];
+						$.data(this, audio, new Audio(audiofile));
+						window["audio"+$(this).data('audio')[1]] = new Audio(audiofile);
+						window["audio"+$(this).data('audio')[1]].play();
+						// Establish an event listener to change the play buttons class when the audio is finished.
+						var button = this;
+						window["audio"+$(this).data('audio')[1]].addEventListener('ended', function(){
+						    $(button).removeClass('playing');
+						});
+					}
+					// -- of course we need to toggle the class of the button.
+					$(this).toggleClass('playing');
+
+				});
+
+			});
+    </script>
+
+</html>
