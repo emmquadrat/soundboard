@@ -5,12 +5,14 @@ This is a simple soundboard based on HTML and javascript. You don't need to have
 
 The file uses a code like this
 
+```javascript
 var soundboard_buttons = [
 	// Ambient Music
 	['Intro','Soundtrack/262493__gipsyga__intro-to-a-space-series.mp3','soundtrack'],
 	['Tension 30Seconds','Soundtrack/Tension-25s.mp3','soundtrack'],
 	['Sad scene','Ambient/solitary_cello.mp3','soundtrack'],
 …
+```
 
 You can customize the audio like this:
 	- Make square brackets for every sound you want to use.
